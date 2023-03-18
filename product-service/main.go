@@ -20,14 +20,14 @@ type (
 	ProductRequest struct {
 		id    string
 		Name  string `json:"name"`
-		Qtty  int    `json:"qtty"`
+		Stock int    `json:"stock"`
 		Price int    `json:"price"`
 	}
 
 	Product struct {
 		Id        string    `json:"id"`
 		Name      string    `json:"name"`
-		Qtty      int       `json:"qtty"`
+		Stock     int       `json:"stock"`
 		Price     int       `json:"price"`
 		CreatedAt time.Time `json:"createdAt"`
 		UpdatedAt time.Time `json:"updatedAt"`
@@ -50,7 +50,7 @@ func (p *ProductRepository) Add(productRequest ProductRequest) {
 	p.Items = append(p.Items, Product{
 		Id:        productRequest.id,
 		Name:      productRequest.Name,
-		Qtty:      productRequest.Qtty,
+		Stock:     productRequest.Stock,
 		Price:     productRequest.Price,
 		CreatedAt: time.Now(),
 	})
@@ -71,6 +71,31 @@ func (p *ProductRepository) FindProductById(id string) (Product, error) {
 	}
 
 	return Product{}, ErrRecordNotFound
+}
+
+func (p *ProductRepository) FindProductsByIds(ids []string) ([]Product, error) {
+	items := p.Items
+	lenItems := len(items)
+	if lenItems == 0 {
+		return []Product{}, ErrRecordNotFound
+	}
+
+	products := make([]Product, 0)
+	lenIds := len(ids)
+	for i := 0; i < lenIds; i++ {
+		for j := 0; j < lenItems; j++ {
+			product := items[j]
+			if ids[i] == product.Id {
+				products = append(products, product)
+			}
+		}
+	}
+
+	if len(products) == 0 || (len(products) != lenIds) {
+		return []Product{}, ErrRecordNotFound
+	}
+
+	return products, nil
 }
 
 func addProduct(w http.ResponseWriter, r *http.Request) {
@@ -123,7 +148,53 @@ func getProducts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte(bytesItems))
-	w.WriteHeader(http.StatusOK)
+	return
+}
+
+func getProductsByIds(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	mu.Lock()
+	defer mu.Unlock()
+
+	if errParseForm := r.ParseForm(); errParseForm != nil {
+		log.Printf("errParseForm: %v", errParseForm)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	ids := r.Form["ids"]
+	if len(ids) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	lenIds := len(ids)
+	for i := 0; i < lenIds; i++ {
+		if strings.Trim(ids[i], " ") == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+
+	products, errFindProductsByIds := productRepository.FindProductsByIds(ids)
+	if errFindProductsByIds != nil {
+		if errors.Is(errFindProductsByIds, ErrRecordNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	bytesProducts, errMarshal := json.Marshal(products)
+	if errMarshal != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.Write(bytesProducts)
 	return
 }
 
@@ -155,7 +226,6 @@ func getProductById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write(bytesProduct)
-	w.WriteHeader(http.StatusOK)
 	return
 }
 
@@ -169,15 +239,15 @@ func main() {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
 
 	router.Post("/api/v1/products", addProduct)
 	router.Get("/api/v1/products", getProducts)
 	router.Get("/api/v1/products/{id}", getProductById)
+	router.Get("/api/v1/products/ids", getProductsByIds)
 
 	log.Printf("Running product-service on :%s", port)
-	if errListenAndServe := http.ListenAndServe(fmt.Sprintf(":%s", port), router); errListenAndServe != nil {
-		log.Fatalf("Error when listen and serve: %v", errListenAndServe)
-	}
+	log.Fatalf("Error when listen and serve: %v", http.ListenAndServe(fmt.Sprintf(":%s", port), router))
 }
 
 func generateProductId(currentSize int) (string, error) {
