@@ -55,12 +55,13 @@ type (
 )
 
 var (
-	mu                sync.Mutex
-	port              = "8082"
-	ErrRecordNotFound = errors.New("record not found")
-	orderRepository   OrderRepository
-	ordersIds         []string
-	ordersDetailIds   []string
+	mu                 sync.Mutex
+	port               = "8082"
+	hostProductService = "product-service:8082"
+	ErrRecordNotFound  = errors.New("record not found")
+	orderRepository    OrderRepository
+	ordersIds          []string
+	ordersDetailIds    []string
 
 	client = &http.Client{
 		Transport: &http.Transport{
@@ -147,7 +148,7 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 	// do check products to product-service
 	request, errNewProduct := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("http://product-service:8081/api/v1/products/ids?%s", paramIds.Encode()),
+		fmt.Sprintf("http://%s/api/v1/products/ids?%s", hostProductService, paramIds.Encode()),
 		nil)
 	if errNewProduct != nil {
 		log.Printf("errNewProduct: %v", errNewProduct)
@@ -249,10 +250,6 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 	}
 	mu.Unlock()
 
-	log.Print("orderdsIds")
-	log.Println(ordersIds)
-	log.Printf("ordersDetailIds")
-	log.Println(ordersDetailIds)
 	w.WriteHeader(http.StatusOK)
 	return
 }
@@ -260,6 +257,10 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 func init() {
 	if os.Getenv("PORT") != "" {
 		port = os.Getenv("PORT")
+	}
+
+	if os.Getenv("HOST_PRODUCT_SERVICE") != "" {
+		hostProductService = os.Getenv("HOST_PRODUCT_SERVICE")
 	}
 }
 
