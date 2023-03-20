@@ -15,6 +15,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/sinulingga23/microservices/order-service/utils"
 )
 
 type (
@@ -189,7 +190,7 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 	mu.Unlock()
 
 	mu.Lock()
-	orderId, errGenerateOrderId := generateOrderId(len(ordersIds))
+	orderId, errGenerateOrderId := utils.GenerateOrderId(len(ordersIds))
 	if errGenerateOrderId != nil {
 		log.Printf("errGenerateId: %v", errGenerateOrderId)
 		w.WriteHeader(http.StatusBadRequest)
@@ -206,7 +207,7 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < lenOrders; i++ {
 		orders[i].orderId = orderId
-		orderDetailId, errGenerateOrderDetail := generateOrderDetailId(len(ordersDetailIds))
+		orderDetailId, errGenerateOrderDetail := utils.GenerateOrderDetailId(len(ordersDetailIds))
 		if errGenerateOrderDetail != nil {
 			log.Printf("errGenerateOrderDetail: %v", errGenerateOrderDetail)
 			// reversal
@@ -274,50 +275,4 @@ func main() {
 
 	log.Printf("Running order-service on: %s", port)
 	log.Fatalf("Error when listen and server: %v", http.ListenAndServe(fmt.Sprintf(":%s", port), router))
-}
-
-func generateOrderId(currentSize int) (string, error) {
-	if currentSize <= -1 {
-		return "", errors.New("currentSize should greaer than -1")
-	}
-
-	currentSize += 1
-	tempCurrentSize := currentSize
-	countDigit := 0
-	for currentSize != 0 {
-		currentSize /= 10
-		countDigit += 1
-	}
-
-	if tempCurrentSize == 0 {
-		tempCurrentSize = 1
-		countDigit = 1
-	}
-
-	totalDigitZero := 6
-	totalDigitZero -= countDigit
-	return fmt.Sprintf("ORD%s%d", strings.Repeat("0", totalDigitZero), tempCurrentSize), nil
-}
-
-func generateOrderDetailId(currentSize int) (string, error) {
-	if currentSize <= -1 {
-		return "", errors.New("currentSize should greaer than -1")
-	}
-
-	currentSize += 1
-	tempCurrentSize := currentSize
-	countDigit := 0
-	for currentSize != 0 {
-		currentSize /= 10
-		countDigit += 1
-	}
-
-	if tempCurrentSize == 0 {
-		tempCurrentSize = 1
-		countDigit = 1
-	}
-
-	totalDigitZero := 6
-	totalDigitZero -= countDigit
-	return fmt.Sprintf("ODD%s%d", strings.Repeat("0", totalDigitZero), tempCurrentSize), nil
 }

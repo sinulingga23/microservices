@@ -33,8 +33,17 @@ type (
 		UpdatedAt time.Time `json:"updatedAt"`
 	}
 
+	Deduction struct {
+		Id            string
+		ProductId     string
+		OrderId       string
+		OrderDetailId string
+		Qtty          int
+	}
+
 	ProductRepository struct {
-		Items []Product
+		Items            []Product
+		HistoryDeduction []Deduction
 	}
 )
 
@@ -96,6 +105,23 @@ func (p *ProductRepository) FindProductsByIds(ids []string) ([]Product, error) {
 	}
 
 	return products, nil
+}
+
+func (p *ProductRepository) DeductStockProductById(id string, qtty int) error {
+	items := p.Items
+	lenItems := len(items)
+	if lenItems == 0 {
+		return ErrRecordNotFound
+	}
+
+	for i := 0; i < lenItems; i++ {
+		if id == p.Items[i].Id {
+			p.Items[i].Stock -= qtty
+			return nil
+		}
+	}
+
+	return ErrRecordNotFound
 }
 
 func addProduct(w http.ResponseWriter, r *http.Request) {
@@ -227,6 +253,10 @@ func getProductById(w http.ResponseWriter, r *http.Request) {
 
 	w.Write(bytesProduct)
 	return
+}
+
+func deductStockProductById(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 }
 
 func init() {
