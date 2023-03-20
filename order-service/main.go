@@ -5,9 +5,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"net/url"
+	"os"
 	"strings"
 	"sync"
+	"time"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 type (
@@ -36,13 +43,24 @@ type (
 	OrderRepository struct {
 		Items []OrderDetail
 	}
+
+	ProductResponse struct {
+		Id        string    `json:"id"`
+		Name      string    `json:"name"`
+		Stock     int       `json:"stock"`
+		Price     int       `json:"price"`
+		CreatedAt time.Time `json:"createdAt"`
+		UpdatedAt time.Time `json:"updatedAt"`
+	}
 )
 
 var (
 	mu                sync.Mutex
+	port              = "8082"
 	ErrRecordNotFound = errors.New("record not found")
 	orderRepository   OrderRepository
 	ordersIds         []string
+	ordersDetailIds   []string
 
 	client = &http.Client{
 		Transport: &http.Transport{
@@ -94,23 +112,16 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 
 	ordersRequest := OrdersRequest{}
 	if errUnmarshal := json.Unmarshal(bytesRequest, &ordersRequest); errUnmarshal != nil {
+		log.Printf("errUnmarshal: %v", errUnmarshal)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
-	mu.Lock()
-	orderId, errGenerateOrderId := generateOrderId(len(ordersIds))
-	if errGenerateOrderId != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		mu.Unlock()
-		return
-	}
-	mu.Unlock()
 
 	mu.Lock()
 	orders := ordersRequest.Orders
 	lenOrders := len(orders)
 	if lenOrders == 0 {
+		log.Printf("lenOrders: %v", lenOrders)
 		mu.Unlock()
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -122,8 +133,11 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ennsure item of productIds is not empty
+	paramIds := url.Values{}
 	for _, productId := range productIds {
+		paramIds.Add("ids", productId)
 		if strings.Trim(productId, " ") == "" {
+			log.Printf("productId: %v", "empty")
 			w.WriteHeader(http.StatusBadRequest)
 			mu.Unlock()
 			return
@@ -133,9 +147,10 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 	// do check products to product-service
 	request, errNewProduct := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("http://localhost/api/v1/products?ids=%v", productIds),
+		fmt.Sprintf("http://product-service:8081/api/v1/products/ids?%s", paramIds.Encode()),
 		nil)
 	if errNewProduct != nil {
+		log.Printf("errNewProduct: %v", errNewProduct)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
 		return
@@ -143,21 +158,121 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 
 	response, errDo := client.Do(request)
 	if errDo != nil {
+		log.Printf("errDo: %v", errDo)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
 		return
 	}
 
-	mu.Lock()
-	for i := 0; i < lenOrders; i++ {
-		orders[i].orderId = orderId
-		// orders[i].
+	if response.StatusCode != http.StatusOK {
+		log.Printf("response.Status: %v, http.StausOK: %v", response.Status, http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
+		mu.Unlock()
+		return
+	}
+
+	productsResponse := make([]ProductResponse, 0)
+	bytesBody, errReadAll := io.ReadAll(response.Body)
+	if errReadAll != nil {
+		log.Printf("errReadAll: %v", errReadAll)
+		w.WriteHeader(http.StatusBadRequest)
+		mu.Unlock()
+		return
+	}
+	if errUnmarshal := json.Unmarshal(bytesBody, &productsResponse); errUnmarshal != nil {
+		log.Printf("errUnmarshal: %v", errUnmarshal)
+		w.WriteHeader(http.StatusBadRequest)
+		mu.Unlock()
+		return
 	}
 	mu.Unlock()
+
+	mu.Lock()
+	orderId, errGenerateOrderId := generateOrderId(len(ordersIds))
+	if errGenerateOrderId != nil {
+		log.Printf("errGenerateId: %v", errGenerateOrderId)
+		w.WriteHeader(http.StatusBadRequest)
+		mu.Unlock()
+		return
+	}
+	ordersIds = append(ordersIds, orderId)
+
+	mapProducts := map[string]ProductResponse{}
+	for i := 0; i < lenOrders; i++ {
+		productResponse := productsResponse[i]
+		mapProducts[productResponse.Id] = productResponse
+	}
+
+	for i := 0; i < lenOrders; i++ {
+		orders[i].orderId = orderId
+		orderDetailId, errGenerateOrderDetail := generateOrderDetailId(len(ordersDetailIds))
+		if errGenerateOrderDetail != nil {
+			log.Printf("errGenerateOrderDetail: %v", errGenerateOrderDetail)
+			// reversal
+			w.WriteHeader(http.StatusBadRequest)
+			mu.Unlock()
+			return
+		}
+		ordersDetailIds = append(ordersDetailIds, orderDetailId)
+		orders[i].orderDetailId = orderDetailId
+
+		product, ok := mapProducts[orders[i].ProductId]
+		if !ok {
+			log.Printf("ok: %v, productId: %v", ok, orders[i].ProductId)
+			// reversal
+			// go publish.reversal(orderId)
+			w.WriteHeader(http.StatusBadRequest)
+			mu.Unlock()
+			return
+		}
+
+		if product.Price != orders[i].Price {
+			log.Printf("product.Price: %v, orderPrice: %v", product.Price, orders[i].Price)
+			// reversal
+			w.WriteHeader(http.StatusBadRequest)
+			mu.Unlock()
+			return
+		}
+
+		if product.Stock < orders[i].Qtty {
+			log.Printf("product.Stock: %v, orderQtty: %v", product.Stock, orders[i].Qtty)
+			// reversal
+			w.WriteHeader(http.StatusBadRequest)
+			mu.Unlock()
+			return
+		}
+
+		product.Stock -= orders[i].Qtty
+		mapProducts[product.Id] = product
+
+		orders[i].totalPrice = product.Price * orders[i].Qtty
+	}
+	mu.Unlock()
+
+	log.Print("orderdsIds")
+	log.Println(ordersIds)
+	log.Printf("ordersDetailIds")
+	log.Println(ordersDetailIds)
+	w.WriteHeader(http.StatusOK)
+	return
+}
+
+func init() {
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
 }
 
 func main() {
+	router := chi.NewRouter()
 
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+
+	router.Post("/api/v1/orders", createOrders)
+
+	log.Printf("Running order-service on: %s", port)
+	log.Fatalf("Error when listen and server: %v", http.ListenAndServe(fmt.Sprintf(":%s", port), router))
 }
 
 func generateOrderId(currentSize int) (string, error) {

@@ -14,5 +14,4 @@ RUN apk add --no-cache ca-certificates
 
 WORKDIR /product-service
 COPY --from=builder /product-service ./main
-EXPOSE 8081
 ENTRYPOINT ["/product-service/main"]
