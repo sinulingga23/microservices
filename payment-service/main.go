@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-func main() {
+func loadTest() {
 	var wg sync.WaitGroup
 
 	client := &http.Client{
@@ -46,4 +46,11 @@ func main() {
 		}()
 	}
 	wg.Wait()
+}
+
+func main() {
+	// if errPublishMessage := PublishMessage("purchases", []byte("tess gan")); errPublishMessage != nil {
+	// 	log.Fatalf("errPublishMessage: %v", errPublishMessage)
+	// }
+	ReceiveMessage()
 }

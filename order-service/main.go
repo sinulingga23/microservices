@@ -15,7 +15,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/sinulingga23/microservices/order-service/utils"
 )
 
 type (
@@ -190,7 +189,7 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 	mu.Unlock()
 
 	mu.Lock()
-	orderId, errGenerateOrderId := utils.GenerateOrderId(len(ordersIds))
+	orderId, errGenerateOrderId := GenerateOrderId(len(ordersIds))
 	if errGenerateOrderId != nil {
 		log.Printf("errGenerateId: %v", errGenerateOrderId)
 		w.WriteHeader(http.StatusBadRequest)
@@ -207,7 +206,7 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < lenOrders; i++ {
 		orders[i].orderId = orderId
-		orderDetailId, errGenerateOrderDetail := utils.GenerateOrderDetailId(len(ordersDetailIds))
+		orderDetailId, errGenerateOrderDetail := GenerateOrderDetailId(len(ordersDetailIds))
 		if errGenerateOrderDetail != nil {
 			log.Printf("errGenerateOrderDetail: %v", errGenerateOrderDetail)
 			// reversal
@@ -236,8 +235,9 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if product.Stock < orders[i].Qtty {
-			log.Printf("product.Stock: %v, orderQtty: %v", product.Stock, orders[i].Qtty)
+		qtty := orders[i].Qtty
+		if product.Stock < qtty {
+			log.Printf("product.Stock: %v, orderQtty: %v", product.Stock, qtty)
 			// reversal
 			w.WriteHeader(http.StatusBadRequest)
 			mu.Unlock()
@@ -246,6 +246,23 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 
 		product.Stock -= orders[i].Qtty
 		mapProducts[product.Id] = product
+
+		go func(orderId, orderDetailId string, qtty int) {
+			message := struct {
+				OrderId       string `json:"orderId"`
+				OrderDetailId string `json:"orderDetailId"`
+				Qtty          int    `json:"qtty"`
+			}{OrderId: orderId, OrderDetailId: orderDetailId, Qtty: qtty}
+
+			bytesMessage, errMarshal := json.Marshal(&message)
+			if errMarshal != nil {
+				log.Printf("Error when marshal message of topic kafka: %v", errMarshal)
+			}
+
+			if errPublishMessage := PublishMessage(TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER, bytesMessage); errPublishMessage != nil {
+				log.Printf("Error when send message to topic: %v, Errors: %v", TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER, errPublishMessage)
+			}
+		}(orderId, orderDetailId, qtty)
 
 		orders[i].totalPrice = product.Price * orders[i].Qtty
 	}
