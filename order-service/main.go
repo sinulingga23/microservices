@@ -15,9 +15,20 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/sinulingga23/microservices/order-service/constant"
+	"github.com/sinulingga23/microservices/order-service/utils"
 )
 
 type (
+	OrderRepository struct {
+		Items           []OrderDetail
+		OrdersIds       []string
+		OrdersDetailIds []string
+	}
+
+	OrderService struct {
+		orderRepository OrderRepository
+	}
 	OrdersRequest struct {
 		Orders []Order `json:"orders"`
 	}
@@ -40,10 +51,6 @@ type (
 		TotalPrice int    `json:"totalPrice"`
 	}
 
-	OrderRepository struct {
-		Items []OrderDetail
-	}
-
 	ProductResponse struct {
 		Id        string    `json:"id"`
 		Name      string    `json:"name"`
@@ -55,13 +62,12 @@ type (
 )
 
 var (
-	mu                 sync.Mutex
+	mu sync.Mutex
+
 	port               = "8082"
 	hostProductService = "product-service:8082"
-	ErrRecordNotFound  = errors.New("record not found")
-	orderRepository    OrderRepository
-	ordersIds          []string
-	ordersDetailIds    []string
+
+	ErrRecordNotFound = errors.New("record not found")
 
 	client = &http.Client{
 		Transport: &http.Transport{
@@ -70,6 +76,14 @@ var (
 		},
 	}
 )
+
+func NewOrderRepository() OrderRepository {
+	return OrderRepository{
+		Items:           make([]OrderDetail, 0),
+		OrdersIds:       make([]string, 0),
+		OrdersDetailIds: make([]string, 0),
+	}
+}
 
 func (o *OrderRepository) CreateOrder(orderRequest Order) error {
 	o.Items = append(o.Items, OrderDetail{
@@ -102,7 +116,11 @@ func (o *OrderRepository) CreateOrders(ordersRequest []Order) error {
 	return nil
 }
 
-func createOrders(w http.ResponseWriter, r *http.Request) {
+func NewOrderService(orderRepository OrderRepository) OrderService {
+	return OrderService{orderRepository: orderRepository}
+}
+
+func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	bytesRequest, errReadAll := io.ReadAll(r.Body)
@@ -189,14 +207,15 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 	mu.Unlock()
 
 	mu.Lock()
-	orderId, errGenerateOrderId := GenerateOrderId(len(ordersIds))
+
+	orderId, errGenerateOrderId := utils.GenerateOrderId(len(service.orderRepository.OrdersIds))
 	if errGenerateOrderId != nil {
 		log.Printf("errGenerateId: %v", errGenerateOrderId)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
 		return
 	}
-	ordersIds = append(ordersIds, orderId)
+	service.orderRepository.OrdersIds = append(service.orderRepository.OrdersIds, orderId)
 
 	mapProducts := map[string]ProductResponse{}
 	for i := 0; i < lenOrders; i++ {
@@ -206,7 +225,8 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < lenOrders; i++ {
 		orders[i].orderId = orderId
-		orderDetailId, errGenerateOrderDetail := GenerateOrderDetailId(len(ordersDetailIds))
+
+		orderDetailId, errGenerateOrderDetail := utils.GenerateOrderDetailId(len(service.orderRepository.OrdersDetailIds))
 		if errGenerateOrderDetail != nil {
 			log.Printf("errGenerateOrderDetail: %v", errGenerateOrderDetail)
 			// reversal
@@ -214,12 +234,14 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 			mu.Unlock()
 			return
 		}
-		ordersDetailIds = append(ordersDetailIds, orderDetailId)
+
+		service.orderRepository.OrdersDetailIds = append(service.orderRepository.OrdersDetailIds, orderDetailId)
 		orders[i].orderDetailId = orderDetailId
 
-		product, ok := mapProducts[orders[i].ProductId]
+		productId := orders[i].ProductId
+		product, ok := mapProducts[productId]
 		if !ok {
-			log.Printf("ok: %v, productId: %v", ok, orders[i].ProductId)
+			log.Printf("ok: %v, productId: %v", ok, productId)
 			// reversal
 			// go publish.reversal(orderId)
 			w.WriteHeader(http.StatusBadRequest)
@@ -251,23 +273,33 @@ func createOrders(w http.ResponseWriter, r *http.Request) {
 			message := struct {
 				OrderId       string `json:"orderId"`
 				OrderDetailId string `json:"orderDetailId"`
+				ProductId     string `json:"productId"`
 				Qtty          int    `json:"qtty"`
-			}{OrderId: orderId, OrderDetailId: orderDetailId, Qtty: qtty}
+			}{OrderId: orderId, OrderDetailId: orderDetailId, ProductId: productId, Qtty: qtty}
 
 			bytesMessage, errMarshal := json.Marshal(&message)
 			if errMarshal != nil {
 				log.Printf("Error when marshal message of topic kafka: %v", errMarshal)
 			}
 
-			if errPublishMessage := PublishMessage(TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER, bytesMessage); errPublishMessage != nil {
-				log.Printf("Error when send message to topic: %v, Errors: %v", TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER, errPublishMessage)
+			if errPublishMessage := utils.PublishMessage(constant.TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER, bytesMessage); errPublishMessage != nil {
+				log.Printf("Error when send message to topic: %v, Errors: %v", constant.TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER, errPublishMessage)
 			}
 		}(orderId, orderDetailId, qtty)
 
-		orders[i].totalPrice = product.Price * orders[i].Qtty
-	}
-	mu.Unlock()
+		totalPrice := product.Price * orders[i].Qtty
+		orders[i].totalPrice = totalPrice
 
+		service.orderRepository.CreateOrder(Order{
+			orderDetailId: orderDetailId,
+			orderId:       orderId,
+			totalPrice:    totalPrice,
+			ProductId:     productId,
+			Qtty:          qtty,
+		})
+	}
+
+	mu.Unlock()
 	w.WriteHeader(http.StatusOK)
 	return
 }
@@ -288,7 +320,10 @@ func main() {
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
-	router.Post("/api/v1/orders", createOrders)
+	orderRepository := NewOrderRepository()
+	orderService := NewOrderService(orderRepository)
+
+	router.Post("/api/v1/orders", orderService.createOrders)
 
 	log.Printf("Running order-service on: %s", port)
 	log.Fatalf("Error when listen and server: %v", http.ListenAndServe(fmt.Sprintf(":%s", port), router))
