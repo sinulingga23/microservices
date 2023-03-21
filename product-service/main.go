@@ -14,6 +14,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/sinulingga23/microservices/product-service/constant"
+	"github.com/sinulingga23/microservices/product-service/utils"
 )
 
 type (
@@ -275,6 +277,8 @@ func main() {
 	router.Get("/api/v1/products", getProducts)
 	router.Get("/api/v1/products/{id}", getProductById)
 	router.Get("/api/v1/products/ids", getProductsByIds)
+
+	utils.ReceiveMessage(constant.TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER)
 
 	log.Printf("Running product-service on :%s", port)
 	log.Fatalf("Error when listen and serve: %v", http.ListenAndServe(fmt.Sprintf(":%s", port), router))
