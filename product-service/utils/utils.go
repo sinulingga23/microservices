@@ -9,11 +9,22 @@ import (
 	"github.com/Shopify/sarama"
 )
 
+var (
+	kafkaBrokerAddress = []string{}
+)
+
+func init() {
+	if os.Getenv("KAFKA_BROKER_ADDRESS") != "" {
+		kafkaBrokerAddress = append(kafkaBrokerAddress, os.Getenv("KAFKA_BROKER_ADDRESS"))
+	}
+}
+
 func connectConsumer() (sarama.Consumer, error) {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 
-	consumer, errNewConsumer := sarama.NewConsumer([]string{"kafka:9092"}, config)
+	log.Println("kafkaBrokerAddress:", kafkaBrokerAddress)
+	consumer, errNewConsumer := sarama.NewConsumer(kafkaBrokerAddress, config)
 	if errNewConsumer != nil {
 		return nil, errNewConsumer
 	}

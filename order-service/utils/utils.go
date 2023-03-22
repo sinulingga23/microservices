@@ -4,10 +4,21 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/Shopify/sarama"
 )
+
+var (
+	kafkaBrokerAddress = []string{}
+)
+
+func init() {
+	if os.Getenv("KAFKA_BROKER_ADDRESS") != "" {
+		kafkaBrokerAddress = append(kafkaBrokerAddress, os.Getenv("KAFKA_BROKER_ADDRESS"))
+	}
+}
 
 func connectProducer() (sarama.SyncProducer, error) {
 	config := sarama.NewConfig()
@@ -15,9 +26,8 @@ func connectProducer() (sarama.SyncProducer, error) {
 	config.Producer.Retry.Max = 5
 	config.Producer.RequiredAcks = sarama.WaitForAll
 
-	syncProducer, errNewSyncProducer := sarama.NewSyncProducer([]string{
-		"kafka:9092",
-	}, config)
+	log.Println("kafkaBrokerAddress:", kafkaBrokerAddress)
+	syncProducer, errNewSyncProducer := sarama.NewSyncProducer(kafkaBrokerAddress, config)
 	if errNewSyncProducer != nil {
 		return nil, errNewSyncProducer
 	}
