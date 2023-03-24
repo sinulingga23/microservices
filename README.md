@@ -2,7 +2,7 @@
 ```
 docker-compose up -d
 docker cp services.conf nginx:/etc/nginx/conf.d
-docker exec nginx nginx -t (ensure the status is ok before go to next step)
+docker exec nginx nginx -t (ensure the status is ok before go to the next step)
 docker exec nginx nginx -s reload
 ```
 DONE
