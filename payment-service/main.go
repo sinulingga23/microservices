@@ -49,8 +49,4 @@ func loadTest() {
 }
 
 func main() {
-	// if errPublishMessage := PublishMessage("purchases", []byte("tess gan")); errPublishMessage != nil {
-	// 	log.Fatalf("errPublishMessage: %v", errPublishMessage)
-	// }
-	ReceiveMessage()
 }

@@ -2,10 +2,12 @@ module github.com/sinulingga23/microservices/product-service
 
 go 1.19
 
-require github.com/go-chi/chi/v5 v5.0.8
+require (
+	github.com/Shopify/sarama v1.34.1
+	github.com/go-chi/chi/v5 v5.0.8
+)
 
 require (
-	github.com/Shopify/sarama v1.34.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eapache/go-resiliency v1.2.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21 // indirect
