@@ -7,7 +7,7 @@ docker exec nginx nginx -s reload
 ```
 
 # How to see logs of an container.
-docker-compose logs -f --tail=500 <container-name>
+docker-compose logs -f --tail=500 | grep `<container-name>`
 
 # How to shutdown the services.
 docker-compose down
@@ -19,5 +19,3 @@ Get topic detail                : kafka-topics --bootstrap-server=localhost:9092
 Consumes mesages on an topic    :  
 
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning --max-messages 10
-# Good to know
-On server where your admin run kafka find kafka-console-consumer.sh by command find . -name kafka-console-consumer.sh then go to that directory and run for read message from your topic
