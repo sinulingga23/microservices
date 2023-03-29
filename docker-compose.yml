@@ -60,6 +60,19 @@ services:
     depends_on:
       - "product-service"
       - "order-service"
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.37.6
+    ports:
+      - "9090:9090"
+    expose:
+      - "9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus.rules.yml:/etc/prometheus/prometheus.rules.yml
+    depends_on:
+      - "product-service"
+      - "order-service"
 
 volumes:
   nginx_log_microservices:
