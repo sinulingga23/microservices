@@ -138,7 +138,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 	bytesBody, errReadAll := io.ReadAll(r.Body)
 	if errReadAll != nil {
 		log.Printf("errReadAll: %v", errReadAll)
-		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			r.Method,
 			strconv.Itoa(http.StatusBadRequest),
 			errReadAll.Error(),
 			date).Inc()
@@ -148,7 +149,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 
 	if errUnmarshal := json.Unmarshal(bytesBody, &productRequest); errUnmarshal != nil {
 		log.Printf("errUnmarshal: %v", errUnmarshal)
-		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			r.Method,
 			strconv.Itoa(http.StatusBadRequest),
 			errUnmarshal.Error(),
 			date).Inc()
@@ -157,7 +159,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if productRequest.Name == "" {
-		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			r.Method,
 			strconv.Itoa(http.StatusBadRequest),
 			"Product name is empty.",
 			date).Inc()
@@ -166,7 +169,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if productRequest.Stock == 0 {
-		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			r.Method,
 			strconv.Itoa(http.StatusBadRequest),
 			"Stock product is zero.",
 			date).Inc()
@@ -175,7 +179,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if productRequest.Stock < 0 {
-		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			r.Method,
 			strconv.Itoa(http.StatusBadRequest),
 			"Stock product is minus.",
 			date).Inc()
@@ -184,7 +189,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if productRequest.Price == 0 {
-		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			r.Method,
 			strconv.Itoa(http.StatusBadRequest),
 			"Price product is zero.",
 			date).Inc()
@@ -193,7 +199,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if productRequest.Price < 0 {
-		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			r.Method,
 			strconv.Itoa(http.StatusBadRequest),
 			"Price product is minus.",
 			date).Inc()
@@ -206,7 +213,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 
 	productId, errGenerateProductId := generateProductId(len(productRepository.Items))
 	if errGenerateProductId != nil {
-		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			r.Method,
 			strconv.Itoa(http.StatusBadRequest),
 			errGenerateProductId.Error(),
 			date).Inc()
@@ -216,7 +224,8 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 
 	productRequest.id = productId
 	productRepository.Add(productRequest)
-	monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+	go monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		r.Method,
 		strconv.Itoa(http.StatusOK),
 		"Success",
 		date).Inc()
@@ -227,7 +236,14 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 func getProducts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	monitoringDate := time.Now().Format("2006-01-02")
 	if len(productRepository.Items) == 0 {
+		go monitoring.RequestTotalEndpointGetProducts.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusNotFound),
+			"Data empty.",
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -236,10 +252,22 @@ func getProducts(w http.ResponseWriter, r *http.Request) {
 	defer mu.Unlock()
 	bytesItems, errMarshal := json.Marshal(&productRepository.Items)
 	if errMarshal != nil {
+		go monitoring.RequestTotalEndpointGetProducts.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errMarshal.Error(),
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	go monitoring.RequestTotalEndpointGetProducts.WithLabelValues(
+		r.Method,
+		strconv.Itoa(http.StatusOK),
+		"Success",
+		monitoringDate,
+	).Inc()
 	w.Write([]byte(bytesItems))
 	return
 }
@@ -250,14 +278,27 @@ func getProductsByIds(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	defer mu.Unlock()
 
+	monitoringDate := time.Now().Format("2006-01-02")
 	if errParseForm := r.ParseForm(); errParseForm != nil {
 		log.Printf("errParseForm: %v", errParseForm)
+		go monitoring.RequestTotalEndpointGetProductsByIds.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errParseForm.Error(),
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	ids := r.Form["ids"]
 	if len(ids) == 0 {
+		go monitoring.RequestTotalEndpointGetProductsByIds.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusNotFound),
+			"ids empty.",
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -265,6 +306,12 @@ func getProductsByIds(w http.ResponseWriter, r *http.Request) {
 	lenIds := len(ids)
 	for i := 0; i < lenIds; i++ {
 		if strings.Trim(ids[i], " ") == "" {
+			go monitoring.RequestTotalEndpointGetProductsByIds.WithLabelValues(
+				r.Method,
+				strconv.Itoa(http.StatusBadRequest),
+				"id of ids empty.",
+				monitoringDate,
+			).Inc()
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -273,20 +320,44 @@ func getProductsByIds(w http.ResponseWriter, r *http.Request) {
 	products, errFindProductsByIds := productRepository.FindProductsByIds(ids)
 	if errFindProductsByIds != nil {
 		if errors.Is(errFindProductsByIds, ErrRecordNotFound) {
+			go monitoring.RequestTotalEndpointGetProductsByIds.WithLabelValues(
+				r.Method,
+				strconv.Itoa(http.StatusNotFound),
+				errFindProductsByIds.Error(),
+				monitoringDate,
+			).Inc()
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
 
+		go monitoring.RequestTotalEndpointGetProductsByIds.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusInternalServerError),
+			errFindProductsByIds.Error(),
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	bytesProducts, errMarshal := json.Marshal(products)
 	if errMarshal != nil {
+		go monitoring.RequestTotalEndpointGetProductsByIds.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errMarshal.Error(),
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	go monitoring.RequestTotalEndpointGetProductsByIds.WithLabelValues(
+		r.Method,
+		strconv.Itoa(http.StatusOK),
+		"Success",
+		monitoringDate,
+	).Inc()
 	w.Write(bytesProducts)
 	return
 }
@@ -295,7 +366,14 @@ func getProductById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	id := chi.URLParam(r, "id")
 
+	monitoringDate := time.Now().Format("2006-01-02")
 	if id == "" {
+		go monitoring.RequestTotalEndpointGetProductById.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			"Id empty.",
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -305,19 +383,44 @@ func getProductById(w http.ResponseWriter, r *http.Request) {
 	product, errFindProductById := productRepository.FindProductById(id)
 	if errFindProductById != nil {
 		if errors.Is(errFindProductById, ErrRecordNotFound) {
+			go monitoring.RequestTotalEndpointGetProductById.WithLabelValues(
+				r.Method,
+				strconv.Itoa(http.StatusNotFound),
+				errFindProductById.Error(),
+				monitoringDate,
+			).Inc()
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
+
+		go monitoring.RequestTotalEndpointGetProductById.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusInternalServerError),
+			errFindProductById.Error(),
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	bytesProduct, errMarshal := json.Marshal(product)
 	if errMarshal != nil {
+		go monitoring.RequestTotalEndpointGetProductById.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errMarshal.Error(),
+			monitoringDate,
+		).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	go monitoring.RequestTotalEndpointGetProductById.WithLabelValues(
+		r.Method,
+		strconv.Itoa(http.StatusOK),
+		"Success",
+		monitoringDate,
+	).Inc()
 	w.Write(bytesProduct)
 	return
 }
@@ -327,8 +430,6 @@ func deductStockProductById(w http.ResponseWriter, r *http.Request) {
 }
 
 func init() {
-	// prometheus.MustRegister(monitoring.RequestTotalEndpointAddProduct)
-
 	if os.Getenv("PORT") != "" {
 		port = os.Getenv("PORT")
 	}

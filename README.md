@@ -18,3 +18,10 @@ docker-compose down
 * Get list topic                  : kafka-topics --bootstrap-server=<host:port> --list
 * Get topic detail                : kafka-topics --bootstrap-server=localhost:9092 --describe --topic <topic-name>
 * Consumes mesages on an topic    : kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning --max-messages 10
+
+# Prometheus Metrics
+## Product Service
+* request_total_endpoint_add_product
+* request_total_endpoint_get_products
+* request_total_endpoint_get_product_by_id
+* request_total_endpoint_get_products_by_ids

@@ -69,7 +69,6 @@ services:
       - "9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus.rules.yml:/etc/prometheus/prometheus.rules.yml
     depends_on:
       - "product-service"
       - "order-service"
