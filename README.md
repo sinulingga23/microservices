@@ -4,10 +4,14 @@ docker-compose up -d
 ```
 
 # How to see logs of an container.
+```
 docker-compose logs -f --tail=500 | grep `<container-name>`
+```
 
 # How to shutdown the services.
+```
 docker-compose down
+```
 
 
 # Common Kafka Commands
