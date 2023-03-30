@@ -8,13 +8,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sinulingga23/microservices/product-service/constant"
+	"github.com/sinulingga23/microservices/product-service/monitoring"
 	"github.com/sinulingga23/microservices/product-service/utils"
 )
 
@@ -131,15 +134,69 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 
 	productRequest := ProductRequest{}
 
+	date := time.Now().Format("2006-01-02")
 	bytesBody, errReadAll := io.ReadAll(r.Body)
 	if errReadAll != nil {
 		log.Printf("errReadAll: %v", errReadAll)
+		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			strconv.Itoa(http.StatusBadRequest),
+			errReadAll.Error(),
+			date).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if errUnmarshal := json.Unmarshal(bytesBody, &productRequest); errUnmarshal != nil {
 		log.Printf("errUnmarshal: %v", errUnmarshal)
+		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			strconv.Itoa(http.StatusBadRequest),
+			errUnmarshal.Error(),
+			date).Inc()
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if productRequest.Name == "" {
+		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			strconv.Itoa(http.StatusBadRequest),
+			"Product name is empty.",
+			date).Inc()
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if productRequest.Stock == 0 {
+		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			strconv.Itoa(http.StatusBadRequest),
+			"Stock product is zero.",
+			date).Inc()
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if productRequest.Stock < 0 {
+		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			strconv.Itoa(http.StatusBadRequest),
+			"Stock product is minus.",
+			date).Inc()
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if productRequest.Price == 0 {
+		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			strconv.Itoa(http.StatusBadRequest),
+			"Price product is zero.",
+			date).Inc()
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if productRequest.Price < 0 {
+		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			strconv.Itoa(http.StatusBadRequest),
+			"Price product is minus.",
+			date).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -149,12 +206,20 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 
 	productId, errGenerateProductId := generateProductId(len(productRepository.Items))
 	if errGenerateProductId != nil {
+		monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+			strconv.Itoa(http.StatusBadRequest),
+			errGenerateProductId.Error(),
+			date).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	productRequest.id = productId
 	productRepository.Add(productRequest)
+	monitoring.RequestTotalEndpointAddProduct.WithLabelValues(
+		strconv.Itoa(http.StatusOK),
+		"Success",
+		date).Inc()
 	w.WriteHeader(http.StatusOK)
 	return
 }
@@ -262,6 +327,8 @@ func deductStockProductById(w http.ResponseWriter, r *http.Request) {
 }
 
 func init() {
+	// prometheus.MustRegister(monitoring.RequestTotalEndpointAddProduct)
+
 	if os.Getenv("PORT") != "" {
 		port = os.Getenv("PORT")
 	}
@@ -277,6 +344,7 @@ func main() {
 	router.Get("/api/v1/products", getProducts)
 	router.Get("/api/v1/products/{id}", getProductById)
 	router.Get("/api/v1/products/ids", getProductsByIds)
+	router.Get("/metrics", promhttp.Handler().ServeHTTP)
 
 	utils.ReceiveMessage(constant.TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER)
 
