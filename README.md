@@ -29,6 +29,8 @@ docker-compose down
 # Tech Stack
 * Golang
 * Go-Chi
+* Docker
 * Kafka 
 * Nginx
 * Prometheus
+
