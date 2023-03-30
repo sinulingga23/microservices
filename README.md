@@ -26,6 +26,9 @@ docker-compose down
 * request_total_endpoint_get_product_by_id
 * request_total_endpoint_get_products_by_ids
 
+## Order Service
+* request_total_endpoint_create_orders
+
 # Tech Stack
 * Golang
 * Go-Chi

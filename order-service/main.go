@@ -9,13 +9,16 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sinulingga23/microservices/order-service/constant"
+	"github.com/sinulingga23/microservices/order-service/monitoring"
 	"github.com/sinulingga23/microservices/order-service/utils"
 )
 
@@ -123,9 +126,16 @@ func NewOrderService(orderRepository OrderRepository) OrderService {
 func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	monitoringDate := time.Now().Format("2006-01-02")
 	bytesRequest, errReadAll := io.ReadAll(r.Body)
 	if errReadAll != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errReadAll.Error(),
+			monitoringDate,
+		).Inc()
 		return
 	}
 
@@ -133,6 +143,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 	if errUnmarshal := json.Unmarshal(bytesRequest, &ordersRequest); errUnmarshal != nil {
 		log.Printf("errUnmarshal: %v", errUnmarshal)
 		w.WriteHeader(http.StatusBadRequest)
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errUnmarshal.Error(),
+			monitoringDate,
+		).Inc()
 		return
 	}
 
@@ -143,6 +159,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 		log.Printf("lenOrders: %v", lenOrders)
 		mu.Unlock()
 		w.WriteHeader(http.StatusBadRequest)
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			"Orders empty.",
+			monitoringDate,
+		).Inc()
 		return
 	}
 
@@ -159,6 +181,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 			log.Printf("productId: %v", "empty")
 			w.WriteHeader(http.StatusBadRequest)
 			mu.Unlock()
+			go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+				r.Method,
+				strconv.Itoa(http.StatusBadRequest),
+				"Id of ids empty",
+				monitoringDate,
+			).Inc()
 			return
 		}
 	}
@@ -172,6 +200,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 		log.Printf("errNewProduct: %v", errNewProduct)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errNewProduct.Error(),
+			monitoringDate,
+		).Inc()
 		return
 	}
 
@@ -180,6 +214,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 		log.Printf("errDo: %v", errDo)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errDo.Error(),
+			monitoringDate,
+		).Inc()
 		return
 	}
 
@@ -187,6 +227,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 		log.Printf("response.Status: %v, http.StausOK: %v", response.Status, http.StatusOK)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			fmt.Sprintf("response.Status: %v, http.StausOK: %v", response.Status, http.StatusOK),
+			monitoringDate,
+		).Inc()
 		return
 	}
 
@@ -196,12 +242,24 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 		log.Printf("errReadAll: %v", errReadAll)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errReadAll.Error(),
+			monitoringDate,
+		).Inc()
 		return
 	}
 	if errUnmarshal := json.Unmarshal(bytesBody, &productsResponse); errUnmarshal != nil {
 		log.Printf("errUnmarshal: %v", errUnmarshal)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errUnmarshal.Error(),
+			monitoringDate,
+		).Inc()
 		return
 	}
 	mu.Unlock()
@@ -213,6 +271,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 		log.Printf("errGenerateId: %v", errGenerateOrderId)
 		w.WriteHeader(http.StatusBadRequest)
 		mu.Unlock()
+		go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+			r.Method,
+			strconv.Itoa(http.StatusBadRequest),
+			errGenerateOrderId.Error(),
+			monitoringDate,
+		).Inc()
 		return
 	}
 	service.orderRepository.OrdersIds = append(service.orderRepository.OrdersIds, orderId)
@@ -232,6 +296,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 			// reversal
 			w.WriteHeader(http.StatusBadRequest)
 			mu.Unlock()
+			go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+				r.Method,
+				strconv.Itoa(http.StatusBadRequest),
+				errGenerateOrderDetail.Error(),
+				monitoringDate,
+			).Inc()
 			return
 		}
 
@@ -246,6 +316,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 			// go publish.reversal(orderId)
 			w.WriteHeader(http.StatusBadRequest)
 			mu.Unlock()
+			go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+				r.Method,
+				strconv.Itoa(http.StatusBadRequest),
+				fmt.Sprintf("ok: %v, productId: %v", ok, productId),
+				monitoringDate,
+			).Inc()
 			return
 		}
 
@@ -254,6 +330,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 			// reversal
 			w.WriteHeader(http.StatusBadRequest)
 			mu.Unlock()
+			go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+				r.Method,
+				strconv.Itoa(http.StatusBadRequest),
+				fmt.Sprintf("product.Price: %v, orderPrice: %v", product.Price, orders[i].Price),
+				monitoringDate,
+			).Inc()
 			return
 		}
 
@@ -263,6 +345,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 			// reversal
 			w.WriteHeader(http.StatusBadRequest)
 			mu.Unlock()
+			go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+				r.Method,
+				strconv.Itoa(http.StatusBadRequest),
+				fmt.Sprintf("product.Stock: %v, orderQtty: %v", product.Stock, qtty),
+				monitoringDate,
+			).Inc()
 			return
 		}
 
@@ -280,10 +368,22 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 			bytesMessage, errMarshal := json.Marshal(&message)
 			if errMarshal != nil {
 				log.Printf("Error when marshal message of topic kafka: %v", errMarshal)
+				monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+					r.Method,
+					strconv.Itoa(http.StatusBadRequest),
+					errMarshal.Error(),
+					monitoringDate,
+				).Inc()
 			}
 
 			if errPublishMessage := utils.PublishMessage(constant.TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER, bytesMessage); errPublishMessage != nil {
 				log.Printf("Error when send message to topic: %v, Errors: %v", constant.TOPIC_DEDUC_QTTY_PRODUCT_FOR_ORDER, errPublishMessage)
+				monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+					r.Method,
+					strconv.Itoa(http.StatusBadRequest),
+					errPublishMessage.Error(),
+					monitoringDate,
+				).Inc()
 			}
 		}(orderId, orderDetailId, qtty)
 
@@ -301,6 +401,12 @@ func (service *OrderService) createOrders(w http.ResponseWriter, r *http.Request
 
 	mu.Unlock()
 	w.WriteHeader(http.StatusOK)
+	go monitoring.RequestTotalEndpointCreateOrders.WithLabelValues(
+		r.Method,
+		strconv.Itoa(http.StatusOK),
+		"Success",
+		monitoringDate,
+	).Inc()
 	return
 }
 
@@ -324,6 +430,7 @@ func main() {
 	orderService := NewOrderService(orderRepository)
 
 	router.Post("/api/v1/orders", orderService.createOrders)
+	router.Get("/metrics", promhttp.Handler().ServeHTTP)
 
 	log.Printf("Running order-service on: %s", port)
 	log.Fatalf("Error when listen and server: %v", http.ListenAndServe(fmt.Sprintf(":%s", port), router))
