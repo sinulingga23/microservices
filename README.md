@@ -25,3 +25,10 @@ docker-compose down
 * request_total_endpoint_get_products
 * request_total_endpoint_get_product_by_id
 * request_total_endpoint_get_products_by_ids
+
+# Tech Stack
+* Golang
+* Go-Chi
+* Kafka 
+* Nginx
+* Prometheus
