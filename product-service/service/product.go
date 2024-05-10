@@ -42,58 +42,70 @@ func (s *productService) HandleAddProduct(ctx context.Context, request payload.A
 	}
 
 	uniqueCategoryIds := []string{}
-	if len(request.CategoryIds) > 0 {
-
-		mapId := map[string]int{}
-		for i := 0; i < len(request.CategoryIds); i++ {
-			_, ok := mapId[request.CategoryIds[i]]
-			if !ok {
-				uniqueCategoryIds = append(uniqueCategoryIds, request.CategoryIds[i])
-			}
-
-			mapId[request.CategoryIds[i]] = 1
-		}
-
-		ids, err := s.categoryRepository.GetIdsByIds(ctx, uniqueCategoryIds)
-		if err != nil && errors.Is(err, mongo.ErrNoDocuments) {
-			log.Printf("%s: category not found: %v", serviceName, err)
-			response.StatusCode = http.StatusBadRequest
-			response.Message = utils.ErrCategoryNotExists.Error()
-			return response
-		}
+	visitedId := map[string]int{}
+	for i := 0; i < len(request.CategoryIds); i++ {
+		id := request.CategoryIds[i]
+		_, err := uuid.Parse(id)
 		if err != nil {
-			log.Printf("%s: error when try get ids: %v", serviceName, err)
-			response.StatusCode = http.StatusInternalServerError
-			response.Message = utils.ErrDBError.Error()
-			return response
-		}
-
-		for i := 0; i < len(ids); i++ {
-			mapId[ids[i]] += 1
-		}
-
-		isNotExists := false
-		for _, ct := range mapId {
-			if ct == 1 {
-				isNotExists = true
-				break
-			}
-		}
-
-		if isNotExists {
 			response.StatusCode = http.StatusBadRequest
 			response.Message = utils.ErrCategoryNotExists.Error()
 			return response
+		}
+
+		_, ok := visitedId[id]
+		if !ok {
+			uniqueCategoryIds = append(uniqueCategoryIds, id)
+		}
+
+		visitedId[id] = 1
+	}
+
+	resultIds := []string{}
+	var err error
+
+	if len(uniqueCategoryIds) > 0 {
+		resultIds, err = s.categoryRepository.GetIdsByIds(ctx, uniqueCategoryIds)
+	}
+	if err != nil && errors.Is(err, mongo.ErrNoDocuments) {
+		log.Printf("%s: category not found: %v", serviceName, err)
+		response.StatusCode = http.StatusBadRequest
+		response.Message = utils.ErrCategoryNotExists.Error()
+		return response
+	}
+	if err != nil {
+		log.Printf("%s: error when try get ids: %v", serviceName, err)
+		response.StatusCode = http.StatusInternalServerError
+		response.Message = utils.ErrDBError.Error()
+		return response
+	}
+	if len(resultIds) == 0 {
+		response.StatusCode = http.StatusBadRequest
+		response.Message = utils.ErrCategoryNotExists.Error()
+		return response
+	}
+
+	count := 0
+	for i := 0; i < len(resultIds); i++ {
+		id := resultIds[i]
+		visitedId[id] += 1
+		if visitedId[id] == 2 {
+			count += 1
 		}
 	}
 
-	err := s.productRepository.Create(ctx, model.Product{
+	if count != len(resultIds) {
+		response.StatusCode = http.StatusBadRequest
+		response.Message = utils.ErrCategoryNotExists.Error()
+		return response
+	}
+
+	err = s.productRepository.Create(ctx, model.Product{
 		Id:          uuid.NewString(),
 		Name:        request.Name,
 		Qtty:        request.Qtty,
 		Price:       request.Price,
 		Description: request.Description,
-		CategoryIds: uniqueCategoryIds,
+		CategoryIds: resultIds,
 	})
 	if err != nil {
 		log.Printf("%s: error when try create data: %v", serviceName, err)
