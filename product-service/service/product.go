@@ -45,12 +45,6 @@ func (s *productService) HandleAddProduct(ctx context.Context, request payload.A
 	visitedId := map[string]int{}
 	for i := 0; i < len(request.CategoryIds); i++ {
 		id := request.CategoryIds[i]
-		_, err := uuid.Parse(id)
-		if err != nil {
-			response.StatusCode = http.StatusBadRequest
-			response.Message = utils.ErrCategoryNotExists.Error()
-			return response
-		}
 
 		_, ok := visitedId[id]
 		if !ok {
