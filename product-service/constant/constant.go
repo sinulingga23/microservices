@@ -10,4 +10,5 @@ const (
 
 const (
 	COLLECTION_NAME_CATAGORIES = "categories"
+	COLLECTION_NAME_PRODUCTS   = "products"
 )
