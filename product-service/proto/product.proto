@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "github.com/sinulingga23/microservices/product-service";
+
+package proto;
+
+import "base.proto";
+
+service Product {
+    rpc HandleDeductQtty (DeductQttyRequest) returns(BaseResponse) {}
+}
+
+message DeductQttyRequest {
+    string orderId = 1;
+    repeated DeductQttyData data = 2;
+}
+
+message DeductQttyData {
+    string productId = 1;
+    int32 qtty = 2;
+}

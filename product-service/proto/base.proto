@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "github.com/sinulingga23/microservices/product-service";
+
+package proto;
+
+import "google/protobuf/any.proto";
+
+
+message BaseResponse {
+    string responseCode = 1;
+    string responseDesc = 2;
+    google.protobuf.Any data = 3;
+}
