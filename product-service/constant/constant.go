@@ -12,3 +12,12 @@ const (
 	COLLECTION_NAME_CATAGORIES = "categories"
 	COLLECTION_NAME_PRODUCTS   = "products"
 )
+
+// ErrProductNotExists  = errors.New("product not exists") // 40
+
+const (
+	RPC_CODE_DATA_EMPTY      = "04"
+	RPC_CODE_INVALID_REQUEST = "14"
+	RPC_CODE_FAILED          = "01"
+	RPC_PRODUCT_NOT_EXISTS   = "40"
+)

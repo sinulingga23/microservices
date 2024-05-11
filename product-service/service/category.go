@@ -9,6 +9,7 @@ import (
 	"github.com/sinulingga23/microservices/product-service/model"
 	"github.com/sinulingga23/microservices/product-service/payload"
 	"github.com/sinulingga23/microservices/product-service/repository"
+	"github.com/sinulingga23/microservices/product-service/utils"
 )
 
 type ICategoryService interface {
@@ -41,7 +42,7 @@ func (s *categoryService) HandleAddCategory(ctx context.Context, request payload
 	if err != nil {
 		log.Printf("%s: Error Create Data: %v", serviceName, err)
 		response.StatusCode = http.StatusInternalServerError
-		response.Message = "DB Error"
+		response.Message = utils.ErrDBError.Error()
 		return response
 	}
 
