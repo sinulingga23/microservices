@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/sinulingga23/microservices/product-service";
+option go_package = "github.com/sinulingga23/microservices/product-service/proto-generated/product";
 
-package proto;
+package product;
 
 import "base.proto";
 

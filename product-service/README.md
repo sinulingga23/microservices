@@ -7,6 +7,7 @@ docker run -p 8081:8081 -e 8081 -d --name <container-name> -it <image-tag>
 
 # Generated Protobuf
 From the root service:
+/interfaces/grpc 
 ```
-protoc --proto_path=proto --go_out=proto-generated --go_opt=paths=source_relative base.proto product.proto
+protoc --proto_path=proto --go_out=proto-generated --go-grpc_out=proto-generated --go-grpc_opt=paths=source_relative --go_opt=paths=source_relative base.proto product.proto
 ```
