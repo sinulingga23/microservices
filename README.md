@@ -36,4 +36,6 @@ docker-compose down
 * Kafka 
 * Nginx
 * Prometheus
+* gRPC
+
 
