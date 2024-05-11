@@ -7,8 +7,10 @@ package product;
 import "base.proto";
 
 service Product {
-    rpc HandleDeductQtty (DeductQttyRequest) returns(BaseResponse) {}
+    rpc GetListProductByIds(GetListProductByIdsRequest) returns (BaseResponse) {}
+    rpc HandleDeductQtty (DeductQttyRequest) returns (BaseResponse) {}
 }
+
 
 message DeductQttyRequest {
     string orderId = 1;
@@ -18,4 +20,16 @@ message DeductQttyRequest {
 message DeductQttyData {
     string productId = 1;
     int32 qtty = 2;
+}
+
+message ProductData {
+    string id = 1;
+    string name = 2;
+    string qtty = 3;
+    int32 price = 4;
+    string description = 5;
+}
+
+message GetListProductByIdsRequest {
+    repeated string ids = 1;
 }

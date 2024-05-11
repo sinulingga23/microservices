@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductClient interface {
+	GetListProductByIds(ctx context.Context, in *GetListProductByIdsRequest, opts ...grpc.CallOption) (*base.BaseResponse, error)
 	HandleDeductQtty(ctx context.Context, in *DeductQttyRequest, opts ...grpc.CallOption) (*base.BaseResponse, error)
 }
 
@@ -32,6 +33,15 @@ type productClient struct {
 
 func NewProductClient(cc grpc.ClientConnInterface) ProductClient {
 	return &productClient{cc}
+}
+
+func (c *productClient) GetListProductByIds(ctx context.Context, in *GetListProductByIdsRequest, opts ...grpc.CallOption) (*base.BaseResponse, error) {
+	out := new(base.BaseResponse)
+	err := c.cc.Invoke(ctx, "/product.Product/GetListProductByIds", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *productClient) HandleDeductQtty(ctx context.Context, in *DeductQttyRequest, opts ...grpc.CallOption) (*base.BaseResponse, error) {
@@ -47,6 +57,7 @@ func (c *productClient) HandleDeductQtty(ctx context.Context, in *DeductQttyRequ
 // All implementations must embed UnimplementedProductServer
 // for forward compatibility
 type ProductServer interface {
+	GetListProductByIds(context.Context, *GetListProductByIdsRequest) (*base.BaseResponse, error)
 	HandleDeductQtty(context.Context, *DeductQttyRequest) (*base.BaseResponse, error)
 	mustEmbedUnimplementedProductServer()
 }
@@ -55,6 +66,9 @@ type ProductServer interface {
 type UnimplementedProductServer struct {
 }
 
+func (UnimplementedProductServer) GetListProductByIds(context.Context, *GetListProductByIdsRequest) (*base.BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetListProductByIds not implemented")
+}
 func (UnimplementedProductServer) HandleDeductQtty(context.Context, *DeductQttyRequest) (*base.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HandleDeductQtty not implemented")
 }
@@ -69,6 +83,24 @@ type UnsafeProductServer interface {
 
 func RegisterProductServer(s grpc.ServiceRegistrar, srv ProductServer) {
 	s.RegisterService(&Product_ServiceDesc, srv)
+}
+
+func _Product_GetListProductByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetListProductByIdsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServer).GetListProductByIds(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/product.Product/GetListProductByIds",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServer).GetListProductByIds(ctx, req.(*GetListProductByIdsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Product_HandleDeductQtty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -96,6 +128,10 @@ var Product_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "product.Product",
 	HandlerType: (*ProductServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetListProductByIds",
+			Handler:    _Product_GetListProductByIds_Handler,
+		},
 		{
 			MethodName: "HandleDeductQtty",
 			Handler:    _Product_HandleDeductQtty_Handler,

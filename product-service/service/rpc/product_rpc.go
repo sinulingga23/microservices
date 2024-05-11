@@ -79,12 +79,23 @@ func (r *ProductRpc) HandleDeductQtty(ctx context.Context, in *pbProduct.DeductQ
 		return response, nil
 	}
 
+	// TODO: Dedeuct qtty on db
+
 	return &pbBase.BaseResponse{}, nil
+}
+
+func (r *ProductRpc) GetListProductByIds(ctx context.Context, in *pbProduct.GetListProductByIdsRequest) (*pbBase.BaseResponse, error) {
+	response := &pbBase.BaseResponse{
+		ResponseCode: "00",
+		ResponseDesc: "Success",
+	}
+
+	return response, nil
 }
 
 func (r *ProductRpc) validateDeductQttyRequest(in *pbProduct.DeductQttyRequest) (rc string, rd string) {
 	data := in.Data
-	if data == nil || len(data) == 0 {
+	if data == nil {
 		return "04", utils.ErrDataEmpty.Error()
 	}
 

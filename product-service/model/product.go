@@ -4,7 +4,7 @@ type Product struct {
 	Id          string   `bson:"_id"`
 	Name        string   `bson:"name"`
 	Qtty        int      `bson:"qtty"`
-	Price       int      `bson:"int"`
+	Price       int      `bson:"price"`
 	Description string   `bson:"description"`
 	CategoryIds []string `bson:"categoryIds"`
 }
