@@ -12,17 +12,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type productRpc struct {
+type ProductRpc struct {
 	pbProduct.UnimplementedProductServer
 
 	productRepository repository.IProductRepository
 }
 
-func NewProductRpc(productRepository repository.IProductRepository) *productRpc {
-	return &productRpc{productRepository: productRepository}
+func NewProductRpc(productRepository repository.IProductRepository) *ProductRpc {
+	return &ProductRpc{productRepository: productRepository}
 }
 
-func (r *productRpc) HandleDeductQtty(ctx context.Context, in *pbProduct.DeductQttyRequest) (*pbBase.BaseResponse, error) {
+func (r *ProductRpc) HandleDeductQtty(ctx context.Context, in *pbProduct.DeductQttyRequest) (*pbBase.BaseResponse, error) {
 	response := &pbBase.BaseResponse{
 		ResponseCode: "00",
 		ResponseDesc: "Success",
@@ -82,7 +82,7 @@ func (r *productRpc) HandleDeductQtty(ctx context.Context, in *pbProduct.DeductQ
 	return &pbBase.BaseResponse{}, nil
 }
 
-func (r *productRpc) validateDeductQttyRequest(in *pbProduct.DeductQttyRequest) (rc string, rd string) {
+func (r *ProductRpc) validateDeductQttyRequest(in *pbProduct.DeductQttyRequest) (rc string, rd string) {
 	data := in.Data
 	if data == nil || len(data) == 0 {
 		return "04", utils.ErrDataEmpty.Error()
