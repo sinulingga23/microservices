@@ -6,10 +6,13 @@ services:
     environment:
       - PORT=8081
       - KAFKA_BROKER_ADDRESS=kafka:29092
+      - MONGO_URI=mongodb://mongo:mongo123@localhost:27017/product_service/?authSource=admin
     ports:
       - "8081:8081"
+      - "3031:3031"
     expose:
       - "8081"
+      - "3031"
     depends_on:
       - "kafka"
   order-service:
@@ -72,6 +75,14 @@ services:
     depends_on:
       - "product-service"
       - "order-service"
+  mongo:
+    container_name: mongo
+    image: mongo:7
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo123
+    ports:
+      - "27017:27017"
 
 volumes:
   nginx_log_microservices:
