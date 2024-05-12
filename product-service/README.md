@@ -10,3 +10,6 @@ From the root service:
 ```
 protoc --proto_path=proto --go_out=proto-generated --go-grpc_out=proto-generated --go-grpc_opt=paths=source_relative --go_opt=paths=source_relative base.proto product.proto
 ```
+
+# Commands
+* openssl rand -base64 756 > keyfile_mongo.txt

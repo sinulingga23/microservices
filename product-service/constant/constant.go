@@ -13,7 +13,7 @@ const (
 	COLLECTION_NAME_PRODUCTS   = "products"
 )
 
-// ErrProductNotExists  = errors.New("product not exists") // 40
+//   = errors.New("product not exists") // 40
 
 const (
 	RPC_CODE_DATA_EMPTY      = "04"

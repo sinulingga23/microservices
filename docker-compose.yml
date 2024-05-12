@@ -6,7 +6,7 @@ services:
     environment:
       - PORT=8081
       - KAFKA_BROKER_ADDRESS=kafka:29092
-      - MONGO_URI=mongodb://mongo:mongo123@localhost:27017/product_service/?authSource=admin
+      - MONGO_URI=mongodb://mongo:mongo123@localhost:27017/product_service/?authSource=admin&replicaSet=rs0
     ports:
       - "8081:8081"
       - "3031:3031"
@@ -15,6 +15,8 @@ services:
       - "3031"
     depends_on:
       - "kafka"
+    networks:
+      - microservices
   order-service:
     container_name: order-service
     build: ./order-service
@@ -28,6 +30,8 @@ services:
       - "8082"
     depends_on:
       - "kafka"
+    networks:
+      - microservices
   zookeeper:
     container_name: zookeper
     image: confluentinc/cp-zookeeper:7.1.6
@@ -36,6 +40,8 @@ services:
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
+    networks:
+      - microservices
   kafka:
     container_name: kafka
     image: confluentinc/cp-kafka:7.3.2
@@ -52,6 +58,8 @@ services:
       - KAFKA_OFFSET_TOPIC_REPLICATION_FACTOR=1
     depends_on:
       - zookeeper
+    networks:
+      - microservices
   nginx:
     container_name: nginx
     image: nginx:1.23.3
@@ -63,6 +71,8 @@ services:
     depends_on:
       - "product-service"
       - "order-service"
+    networks:
+      - microservices
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v2.37.6
@@ -75,15 +85,60 @@ services:
     depends_on:
       - "product-service"
       - "order-service"
+    networks:
+      - microservices
+  mongo1:
+    container_name: mongo1
+    image: mongo:7
+    ports:
+      - "30001:27017"
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+    networks:
+      - microservices
+  mongo2:
+    container_name: mongo2
+    image: mongo:7
+    ports:
+      - "30002:27017"
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+    networks:
+      - microservices
+  mongo3:
+    container_name: mongo3
+    image: mongo:7
+    ports:
+      - "30003:27017"
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+    networks:
+      - microservices
   mongo:
     container_name: mongo
     image: mongo:7
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=mongo
-      - MONGO_INITDB_ROOT_PASSWORD=mongo123
-    ports:
-      - "27017:27017"
+    # command: mongod --config /etc/mongod.conf --keyFile /etc/keyfile_mongo.txt
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=mongo
+    #   - MONGO_INITDB_ROOT_PASSWORD=mongo123
+    # ports:
+    #   - "27017:27017"
+    networks:
+      - microservices
+    volumes:
+      - ./initiate_replica.sh:/initiate_replica.sh
+    #   - ./mongod.conf:/etc/mongod.conf
+    #   - ./keyfile_mongo.txt:/etc/keyfile_mongo.txt
+    #   - ./mongod.log:/var/log/mongodb/mongod.log
+      # - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+    entrypoint:
+      - ./initiate_replica.sh
+    
 
 volumes:
   nginx_log_microservices:
     driver: local
+
+networks:
+  microservices:

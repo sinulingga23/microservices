@@ -1,0 +1,180 @@
+
+{"t":{"$date":"2024-05-12T10:42:40.105+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T10:42:40.106+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T10:42:40.107+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T10:42:40.107+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T10:42:40.113+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T10:42:40.113+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:42:40.113+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:42:40.113+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T10:42:40.113+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:42:40.113+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:42:40.113+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T10:43:25.981+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T10:43:25.982+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T10:43:25.982+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T10:43:25.983+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T10:43:25.983+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T10:43:25.983+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:43:25.983+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:43:25.984+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T10:43:25.984+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:43:25.984+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:43:25.984+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T10:45:25.284+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T10:45:25.285+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T10:45:25.285+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T10:45:25.286+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T10:45:25.286+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T10:45:25.286+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:45:25.286+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:45:25.286+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T10:45:25.286+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:45:25.286+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:45:25.286+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T10:47:44.578+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T10:47:44.579+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T10:47:44.580+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T10:47:44.581+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T10:47:44.587+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T10:47:44.587+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:47:44.587+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:47:44.587+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T10:47:44.587+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:47:44.587+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:47:44.587+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T10:52:20.757+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T10:52:20.759+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T10:52:20.760+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T10:52:20.760+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T10:52:20.767+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T10:52:20.767+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:52:20.767+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:52:20.767+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T10:52:20.767+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:52:20.767+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:52:20.767+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T10:53:24.272+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T10:53:24.272+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T10:53:24.273+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T10:53:24.274+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T10:53:24.278+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T10:53:24.278+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:53:24.278+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:53:24.278+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T10:53:24.278+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:53:24.278+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:53:24.278+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T10:53:31.024+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T10:53:31.026+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T10:53:31.026+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T10:53:31.026+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T10:53:31.026+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T10:53:31.026+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:53:31.026+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:53:31.027+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T10:53:31.027+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:53:31.027+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:53:31.027+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T10:54:15.067+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T10:54:15.068+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T10:54:15.068+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T10:54:15.069+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T10:54:15.070+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T10:54:15.070+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:54:15.070+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:54:15.070+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T10:54:15.070+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T10:54:15.070+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T10:54:15.070+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T13:10:23.038+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:10:23.041+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:10:23.042+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T13:10:53.638+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T13:10:53.638+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T13:10:53.639+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T13:10:53.640+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T13:10:53.640+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T13:10:53.640+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:10:53.640+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:10:53.640+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T13:10:53.640+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:10:53.640+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:10:53.640+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T13:11:01.535+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T13:11:01.537+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T13:11:01.537+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T13:11:01.538+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T13:11:01.538+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T13:11:01.538+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:11:01.538+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:11:01.539+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T13:11:01.539+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:11:01.539+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:11:01.539+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T13:13:47.908+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T13:13:47.909+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T13:13:47.910+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T13:13:47.911+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T13:13:47.911+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T13:13:47.911+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:13:47.911+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:13:47.911+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T13:13:47.911+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:13:47.911+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:13:47.911+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T13:14:01.769+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T13:14:01.771+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T13:14:01.771+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T13:14:01.771+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T13:14:01.820+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T13:14:01.820+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:14:01.820+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:14:01.820+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T13:14:01.820+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:14:01.820+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:14:01.820+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T13:24:39.735+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T13:24:39.738+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T13:24:39.738+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T13:24:39.738+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T13:24:39.744+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T13:24:39.744+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:24:39.744+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:24:39.744+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T13:24:39.744+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:24:39.744+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:24:39.744+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
+
+{"t":{"$date":"2024-05-12T13:25:26.090+00:00"},"s":"I",  "c":"CONTROL",  "id":20698,   "ctx":"main","msg":"***** SERVER RESTARTED *****"}
+{"t":{"$date":"2024-05-12T13:25:26.092+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"main","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2024-05-12T13:25:26.092+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"main","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":21},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":21},"outgoing":{"minWireVersion":6,"maxWireVersion":21},"isInternalClient":true}}}
+{"t":{"$date":"2024-05-12T13:25:26.092+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"main","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+{"t":{"$date":"2024-05-12T13:25:26.093+00:00"},"s":"I",  "c":"ACCESS",   "id":20254,   "ctx":"main","msg":"Read security file failed","attr":{"error":{"code":30,"codeName":"InvalidPath","errmsg":"permissions on /etc/keyfile_mongo.txt are too open"}}}
+{"t":{"$date":"2024-05-12T13:25:26.093+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:25:26.093+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:25:26.093+00:00"},"s":"I",  "c":"SHARDING", "id":5847201, "ctx":"main","msg":"Balancer command scheduler stop requested"}
+{"t":{"$date":"2024-05-12T13:25:26.093+00:00"},"s":"I",  "c":"ASIO",     "id":6529201, "ctx":"main","msg":"Network interface redundant shutdown","attr":{"state":"Stopped"}}
+{"t":{"$date":"2024-05-12T13:25:26.093+00:00"},"s":"I",  "c":"ASIO",     "id":22582,   "ctx":"main","msg":"Killing all outstanding egress activity."}
+{"t":{"$date":"2024-05-12T13:25:26.093+00:00"},"s":"F",  "c":"CONTROL",  "id":20575,   "ctx":"main","msg":"Error creating service context","attr":{"error":"Location5579201: Unable to acquire security key[s]"}}
