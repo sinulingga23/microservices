@@ -12,4 +12,5 @@ protoc --proto_path=proto --go_out=proto-generated --go-grpc_out=proto-generated
 ```
 
 # Commands
+## Generate an key 
 * openssl rand -base64 756 > keyfile_mongo.txt

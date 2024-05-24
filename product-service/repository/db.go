@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,9 +11,14 @@ import (
 
 func ConnectMongo() (*mongo.Client, error) {
 	mongoUri := os.Getenv("MONGO_URI")
+	log.Println("MONGO_URI:", mongoUri)
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoUri))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongoUri))
 	if err != nil {
+		return client, err
+	}
+
+	if err := client.Ping(context.Background(), nil); err != nil {
 		return client, err
 	}
 
