@@ -3,6 +3,7 @@ package rpc
 import (
 	"context"
 	"errors"
+	"log"
 
 	"github.com/google/uuid"
 	"github.com/sinulingga23/microservices/product-service/constant"
@@ -11,16 +12,24 @@ import (
 	"github.com/sinulingga23/microservices/product-service/repository"
 	"github.com/sinulingga23/microservices/product-service/utils"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 )
 
 type ProductRpc struct {
 	pbProduct.UnimplementedProductServer
 
+	client            *mongo.Client
 	productRepository repository.IProductRepository
 }
 
-func NewProductRpc(productRepository repository.IProductRepository) *ProductRpc {
-	return &ProductRpc{productRepository: productRepository}
+func NewProductRpc(
+	productRepository repository.IProductRepository,
+	client *mongo.Client) *ProductRpc {
+	return &ProductRpc{
+		productRepository: productRepository,
+		client:            client,
+	}
 }
 
 func (r *ProductRpc) HandleDeductQtty(ctx context.Context, in *pbProduct.DeductQttyRequest) (*pbBase.BaseResponse, error) {
@@ -81,6 +90,30 @@ func (r *ProductRpc) HandleDeductQtty(ctx context.Context, in *pbProduct.DeductQ
 	}
 
 	// TODO: Dedeuct qtty on db
+	wc := writeconcern.Majority()
+	txOptions := options.Transaction().SetWriteConcern(wc)
+
+	txSession, err := r.client.StartSession()
+	if err != nil {
+		log.Printf("Failed start session of tx: %v", err)
+		response.ResponseCode = constant.RPC_CODE_FAILED
+		response.ResponseDesc = constant.RPC_CODE_FAILED
+		return response, nil
+	}
+	defer txSession.EndSession(context.TODO())
+
+	result, err := txSession.WithTransaction(context.TODO(), func(ctx mongo.SessionContext) (interface{}, error) {
+		// TODO: Implement it
+		return nil, nil
+	}, txOptions)
+	if err != nil {
+		log.Printf("Failed when do tx: %v", err)
+		response.ResponseCode = constant.RPC_CODE_FAILED
+		response.ResponseDesc = constant.RPC_CODE_FAILED
+		return response, nil
+	}
+
+	log.Println(result)
 
 	return &pbBase.BaseResponse{}, nil
 }

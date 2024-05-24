@@ -33,7 +33,7 @@ func main() {
 	categoryService := service.NewCategoryService(categoryRepository)
 	productService := service.NewProductService(categoryRepository, productRepository)
 
-	productRpc := rpc.NewProductRpc(productRepository)
+	productRpc := rpc.NewProductRpc(productRepository, client)
 
 	categoryHandler := deliveryHttp.NewCategoryHandler(categoryService)
 	productHandler := deliveryHttp.NewProductHandler(productService)
