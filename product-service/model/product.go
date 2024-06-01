@@ -13,3 +13,9 @@ type ProductQttyData struct {
 	Id   string `bson:"_id"`
 	Qtty int    `bson:"qtty"`
 }
+
+type OrderProduct struct {
+	OrderId   string `bson:"orderId"`
+	ProductId string `bson:"productId"`
+	Qtty      int    `bson:"qtty"`
+}

@@ -2,15 +2,16 @@ package rpc
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	"github.com/google/uuid"
 	"github.com/sinulingga23/microservices/product-service/constant"
+	"github.com/sinulingga23/microservices/product-service/model"
 	pbBase "github.com/sinulingga23/microservices/product-service/proto-generated/base"
 	pbProduct "github.com/sinulingga23/microservices/product-service/proto-generated/product"
 	"github.com/sinulingga23/microservices/product-service/repository"
 	"github.com/sinulingga23/microservices/product-service/utils"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/writeconcern"
@@ -44,52 +45,6 @@ func (r *ProductRpc) HandleDeductQtty(ctx context.Context, in *pbProduct.DeductQ
 		return response, nil
 	}
 
-	data := in.Data
-
-	uniqueIds := []string{}
-	visitedId := map[string]int{}
-	for _, item := range data {
-		_, ok := visitedId[item.ProductId]
-		if !ok {
-			uniqueIds = append(uniqueIds, item.ProductId)
-		}
-
-		visitedId[item.ProductId] = 1
-	}
-
-	listProductQttyData, err := r.productRepository.FindListProductQttyData(ctx, uniqueIds)
-	if err != nil && errors.Is(err, mongo.ErrNoDocuments) {
-		response.ResponseCode = constant.RPC_PRODUCT_NOT_EXISTS
-		response.ResponseDesc = utils.ErrProductNotExists.Error()
-		return response, nil
-	}
-	if err != nil {
-		response.ResponseCode = constant.RPC_CODE_FAILED
-		response.ResponseDesc = utils.ErrFailed.Error()
-		return response, nil
-	}
-
-	if len(listProductQttyData) == 0 {
-		response.ResponseCode = constant.RPC_PRODUCT_NOT_EXISTS
-		response.ResponseDesc = utils.ErrProductNotExists.Error()
-		return response, nil
-	}
-
-	count := 0
-	for _, item := range listProductQttyData {
-		_, ok := visitedId[item.Id]
-		if ok {
-			count += 1
-		}
-	}
-
-	if count != len(uniqueIds) {
-		response.ResponseCode = constant.RPC_PRODUCT_NOT_EXISTS
-		response.ResponseDesc = utils.ErrProductNotExists.Error()
-		return response, nil
-	}
-
-	// TODO: Dedeuct qtty on db
 	wc := writeconcern.Majority()
 	txOptions := options.Transaction().SetWriteConcern(wc)
 
@@ -103,7 +58,57 @@ func (r *ProductRpc) HandleDeductQtty(ctx context.Context, in *pbProduct.DeductQ
 	defer txSession.EndSession(context.TODO())
 
 	result, err := txSession.WithTransaction(context.TODO(), func(ctx mongo.SessionContext) (interface{}, error) {
-		// TODO: Implement it
+		productCollection := r.client.
+			Database(constant.DATABASE_NAME_PRODUCT_SERVICE).
+			Collection(constant.COLLECTION_NAME_PRODUCTS)
+
+		ordersProductsCollection := r.client.
+			Database(constant.COLLECTION_NAME_PRODUCTS).
+			Collection(constant.COLLECTION_NAME_ORDERS_PRODUCTS)
+
+		lenData := len(in.Data)
+		for i := 0; i < lenData; i++ {
+			item := (in.Data)[i]
+
+			singleResult := productCollection.
+				FindOne(ctx,
+					bson.D{{Key: "_id", Value: item.ProductId}},
+					options.FindOne().SetProjection(bson.D{{Key: "_id", Value: 1}, {Key: "qtty", Value: 1}}))
+
+			currentData := model.ProductQttyData{}
+			if err := singleResult.Decode(&currentData); err != nil {
+				log.Printf("error when try decoce data: %v", err)
+				return err, nil
+			}
+
+			if err := singleResult.Err(); err != nil {
+				log.Printf("there last error: %v", err)
+				return err, nil
+			}
+
+			if currentData.Qtty < int(item.Qtty) {
+				return utils.ErrInsufficientQtty, nil
+			}
+			currentData.Qtty -= int(item.Qtty)
+
+			_, err = productCollection.UpdateByID(ctx, bson.D{{Key: "_id", Value: item.ProductId}}, bson.D{{Key: "$set", Value: bson.D{{Key: "qtty", Value: currentData.Qtty}}}})
+			if err != nil {
+				log.Printf("error when try update product by id: %v", err)
+				return utils.ErrFailed, nil
+			}
+
+			orderProduct := model.OrderProduct{
+				OrderId:   in.OrderId,
+				ProductId: item.ProductId,
+				Qtty:      int(item.Qtty),
+			}
+			_, err = ordersProductsCollection.InsertOne(ctx, orderProduct)
+			if err != nil {
+				log.Printf("error when try insert new data orders_product: %v", err)
+				return utils.ErrFailed, nil
+			}
+		}
+
 		return nil, nil
 	}, txOptions)
 	if err != nil {

@@ -9,8 +9,9 @@ const (
 )
 
 const (
-	COLLECTION_NAME_CATAGORIES = "categories"
-	COLLECTION_NAME_PRODUCTS   = "products"
+	COLLECTION_NAME_CATAGORIES      = "categories"
+	COLLECTION_NAME_PRODUCTS        = "products"
+	COLLECTION_NAME_ORDERS_PRODUCTS = "orders_products"
 )
 
 //   = errors.New("product not exists") // 40

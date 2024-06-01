@@ -12,4 +12,5 @@ var (
 	ErrInvalidRequest    = errors.New("invalid request")    // 14
 	ErrFailed            = errors.New("failed")             // 01
 	ErrProductNotExists  = errors.New("product not exists") // 40
+	ErrInsufficientQtty  = errors.New("insufficient qtty")
 )

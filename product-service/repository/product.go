@@ -37,7 +37,7 @@ func (r *productRepository) Create(ctx context.Context, data model.Product) erro
 
 func (r *productRepository) FindListProductQttyData(ctx context.Context, productIds []string) ([]model.ProductQttyData, error) {
 	filter := bson.D{{Key: "_id", Value: bson.D{{Key: "$in", Value: productIds}}}}
-	projection := bson.D{{Key: "_d", Value: 1}, {Key: "qtty", Value: 1}}
+	projection := bson.D{{Key: "_id", Value: 1}, {Key: "qtty", Value: 1}}
 	list := []model.ProductQttyData{}
 
 	cursor, err := r.client.
